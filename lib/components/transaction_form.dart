@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
-
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
+class TransactionForm extends StatefulWidget {
 
   final void Function(String, double) onSubmit;
 
-  TransactionForm(this.onSubmit); // aqui to recebendo uma funcao como parametro no construtor
+  TransactionForm(this.onSubmit); 
+
+  @override
+  _TransactionFormState createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final titleController = TextEditingController();
+  final valueController = TextEditingController();
 
   _submitForm() {
     // nesse caso, o componente pai (transaction_user) passou para o componente filho (transaction_form) uma funcao
@@ -21,7 +26,7 @@ class TransactionForm extends StatelessWidget {
       return;
     }
 
-    onSubmit(title, value);
+    widget.onSubmit(title, value);
   }
 
   @override

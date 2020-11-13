@@ -40,7 +40,7 @@ class TransactionList extends StatelessWidget {
                     'R\$ ${tr.value.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 18,
                       color: Colors.purple,
                     ),
                   ),
