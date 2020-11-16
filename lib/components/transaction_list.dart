@@ -15,7 +15,22 @@ class TransactionList extends StatelessWidget {
     Container(
       height:300,
       // com esse builder renderiza so os itens que estao aparecendo na tela 
-      child: ListView.builder( 
+      child: transactions.isEmpty ? Column(
+        children: [
+          SizedBox(height: 20),
+          Text(
+            'Nenhuma Transação cadastrada',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: 20),
+          Container(
+            height: 200,
+            child: Image.asset('assets/images/waiting.png', 
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ): ListView.builder( 
         // com esses dois itens abaixo, constroi a lista sob demanda, conforme necessario 
         itemCount: transactions.length,
         itemBuilder: (context, index) {
@@ -31,7 +46,7 @@ class TransactionList extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.purple[200],
+                      color: Theme.of(context).primaryColorLight,
                       width: 2,
                     ),
                   ),
@@ -41,7 +56,7 @@ class TransactionList extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: Colors.purple,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -50,10 +65,8 @@ class TransactionList extends StatelessWidget {
                   children: [
                     Text(
                       tr.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      // uma forma de adicionar o tema em um local especifico  
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     Text(
                       DateFormat('d MMM y').format(tr.date),
