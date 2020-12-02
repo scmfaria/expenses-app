@@ -37,7 +37,7 @@ class Chart extends StatelessWidget {
         'day': DateFormat.E().format(weekDay)[0], // pega a primeira letra do nome do dia, exemplo: T de Tuesday
         'value': totalSum, 
       };
-    });
+    }).reversed.toList();
   }
 
   // retorna a soma total da semana 

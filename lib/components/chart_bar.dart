@@ -19,8 +19,11 @@ class ChartBar extends StatelessWidget {
     return Column(
       children: [
         // toStringAsFixed -> é para ter no caso 2 numeros depois da virgula
-        FittedBox(
-          child: Text('${value.toStringAsFixed(2)}'),
+        Container(
+          height: 20, // tamanho fixo
+          child: FittedBox(
+            child: Text('${value.toStringAsFixed(2)}'),
+          ),
         ),
         SizedBox(height: 5),
         Container(

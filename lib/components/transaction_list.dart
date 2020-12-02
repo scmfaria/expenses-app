@@ -37,46 +37,27 @@ class TransactionList extends StatelessWidget {
           final tr = transactions[index];
           return Card(
             elevation: 5,
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric( // margem para fora
-                    horizontal: 15,
-                    vertical: 10
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).primaryColorLight,
-                      width: 2,
-                    ),
-                  ),
-                  padding: EdgeInsets.all(10), // margem dentro do elemento
-                  child: Text(
-                    'R\$ ${tr.value.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColor,
-                    ),
+            margin: EdgeInsets.symmetric(
+              vertical: 5,
+              horizontal: 8,
+            ),
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 30,
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: FittedBox(
+                    child: Text('R\$${tr.value}')
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tr.title,
-                      // uma forma de adicionar o tema em um local especifico  
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    Text(
-                      DateFormat('d MMM y').format(tr.date),
-                      style: TextStyle(
-                        color: Colors.grey[600]
-                      ),
-                    ),
-                  ],
-                ),
-              ]
+              ),
+              title: Text(
+                tr.title,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              subtitle: Text(
+                DateFormat('d MMM y').format(tr.date),
+              ),
             ),
           );
         },
