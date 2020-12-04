@@ -48,20 +48,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final List<Transaction>_transactions = [
-    Transaction(
-      't1', 
-      'Curso', 
-      250.25, 
-      DateTime.now().subtract(Duration(days: 3)),
-    ),
-    Transaction(
-      't2', 
-      'Melissa', 
-      150.00, 
-      DateTime.now().subtract(Duration(days: 4)),
-    ),
-  ];
+  final List<Transaction>_transactions = [];
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((element) {
@@ -72,9 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
-      Random().nextDouble().toString(), title, value, DateTime.now()
+      Random().nextDouble().toString(), title, value, date
     );
 
     // componente Stateful: muda quando alguem externo mudou o parametro (ex.: que vc recebeu como parametro) 
@@ -88,6 +75,15 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((element) {
+        // se o id passado por parametro for igual ao id da transacão, ele é removido
+        return element.id == id;
+      });
+    });
+  }
+
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
       context: context, 
@@ -99,28 +95,45 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Despesas Pessoais',
-          // uma forma de colocar a fonte em um determinado local:
-          // style: TextStyle(
-          //   fontFamily: 'OpenSans',
-          // ),
+
+    final appBar = AppBar(
+      title: Text(
+        'Despesas Pessoais',
+        style: TextStyle(
+          // essa forma de dar o tamanho para o texto é bem importante para aplicações responsivas 
+          fontSize: 15 * MediaQuery.of(context).textScaleFactor,
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add), 
-            onPressed: () => _openTransactionFormModal(context)),
-        ],
+        // uma forma de colocar a fonte em um determinado local:
+        // style: TextStyle(
+        //   fontFamily: 'OpenSans',
+        // ),
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.add), 
+          onPressed: () => _openTransactionFormModal(context)),
+      ],
+    );
+
+    final availableHeight = MediaQuery.of(context).size.height - 
+        appBar.preferredSize.height - 
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start, // eixo da coluna (principal) - esse é o valor default
           crossAxisAlignment: CrossAxisAlignment.stretch, // eixo da linha - ocupa a area inteira da coluna (width)
           children: [
-            Chart(_recentTransactions),
-            TransactionList(_transactions),
+            Container(
+              height: availableHeight * 0.3,
+              child: Chart(_recentTransactions),
+            ),
+            Container(
+              height: availableHeight * 0.7,
+              child: TransactionList(_transactions, _removeTransaction),
+            ),
           ],
         ),
       ),
