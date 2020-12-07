@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expenses/components/transaction_list.dart';
 import 'package:expenses/models/transaction.dart';
+import 'package:flutter/services.dart';
 
 import 'components/chart.dart';
 
@@ -14,6 +15,11 @@ main() => runApp(ExpensesApp());
 class ExpensesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // codigo para fixar o app somente no modo retrato - somente uma orientação
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp
+    // ]);
+
     return MaterialApp(
       home: MyHomePage(),
       // nesse componente principal que se define o tema
@@ -49,6 +55,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   final List<Transaction>_transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((element) {
@@ -95,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: Text(
@@ -109,9 +117,20 @@ class _MyHomePageState extends State<MyHomePage> {
         // ),
       ),
       actions: [
+        if(isLandscape) 
+          IconButton(
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart), 
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              
+              });
+            },
+          ),
         IconButton(
           icon: Icon(Icons.add), 
-          onPressed: () => _openTransactionFormModal(context)),
+          onPressed: () => _openTransactionFormModal(context)
+        ),
       ],
     );
 
@@ -126,14 +145,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start, // eixo da coluna (principal) - esse é o valor default
           crossAxisAlignment: CrossAxisAlignment.stretch, // eixo da linha - ocupa a area inteira da coluna (width)
           children: [
-            Container(
-              height: availableHeight * 0.3,
-              child: Chart(_recentTransactions),
-            ),
-            Container(
-              height: availableHeight * 0.7,
-              child: TransactionList(_transactions, _removeTransaction),
-            ),
+            if(_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 0.7 : 0.3),
+                child: Chart(_recentTransactions),
+              ), 
+            if(!_showChart || !isLandscape) 
+              Container(
+                height: availableHeight * 0.7,
+                child: TransactionList(_transactions, _removeTransaction),
+              ),
           ],
         ),
       ),
