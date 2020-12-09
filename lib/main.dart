@@ -1,10 +1,12 @@
-import 'package:expenses/components/transaction_form.dart';
-
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
 import 'package:expenses/components/transaction_list.dart';
 import 'package:expenses/models/transaction.dart';
+import 'package:expenses/components/transaction_form.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'components/chart.dart';
@@ -53,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<Transaction>_transactions = [];
   bool _showChart = false;
 
@@ -100,70 +101,104 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _getIconButton(IconData icon, Function fn) {
+    return Platform.isIOS ? 
+    GestureDetector(
+      onTap: fn,
+      child: Icon(icon),
+    ) : 
+    IconButton(
+      icon: Icon(icon), 
+      onPressed: fn,
+    );
+  }
+ 
   @override
   Widget build(BuildContext context) {
-    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    final appBar = AppBar(
+    final actions = [
+      if(isLandscape) 
+      _getIconButton(
+        _showChart ? Icons.list : Icons.show_chart, 
+        () {
+          setState(() {
+            _showChart = !_showChart;
+          });
+        },
+      ),
+      _getIconButton(
+        Icons.add, 
+        () => _openTransactionFormModal(context)
+      ),
+    ];
+
+    final PreferredSizeWidget appBar = Platform.isIOS?
+      CupertinoNavigationBar(
+        middle: Text('Despesas pessoais'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: actions,
+        ),
+      ) : 
+     AppBar(
       title: Text(
         'Despesas Pessoais',
         style: TextStyle(
           // essa forma de dar o tamanho para o texto é bem importante para aplicações responsivas 
-          fontSize: 15 * MediaQuery.of(context).textScaleFactor,
+          fontSize: 15 * mediaQuery.textScaleFactor,
         ),
         // uma forma de colocar a fonte em um determinado local:
         // style: TextStyle(
         //   fontFamily: 'OpenSans',
         // ),
       ),
-      actions: [
-        if(isLandscape) 
-          IconButton(
-            icon: Icon(_showChart ? Icons.list : Icons.show_chart), 
-            onPressed: () {
-              setState(() {
-                _showChart = !_showChart;
-              
-              });
-            },
-          ),
-        IconButton(
-          icon: Icon(Icons.add), 
-          onPressed: () => _openTransactionFormModal(context)
-        ),
-      ],
+      actions: actions,
     );
 
-    final availableHeight = MediaQuery.of(context).size.height - 
+    final availableHeight = mediaQuery.size.height - 
         appBar.preferredSize.height - 
-        MediaQuery.of(context).padding.top;
-
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+        mediaQuery.padding.top;
+    
+    final bodyPage = 
+    SafeArea(child: 
+      SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start, // eixo da coluna (principal) - esse é o valor default
           crossAxisAlignment: CrossAxisAlignment.stretch, // eixo da linha - ocupa a area inteira da coluna (width)
           children: [
             if(_showChart || !isLandscape)
               Container(
-                height: availableHeight * (isLandscape ? 0.7 : 0.3),
+                height: availableHeight * (isLandscape ? 0.8 : 0.3),
                 child: Chart(_recentTransactions),
               ), 
             if(!_showChart || !isLandscape) 
               Container(
-                height: availableHeight * 0.7,
+                height: availableHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(_transactions, _removeTransaction),
               ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _openTransactionFormModal(context),
-      ),
-      // centraliza o floatingButton no meio da tela canto inferior (por padrao vem do lado direito)
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, 
+      )
+    );
+      
+
+    return Platform.isIOS ? 
+      CupertinoPageScaffold(
+        navigationBar: appBar,
+        child: bodyPage
+      )
+      : Scaffold(
+        appBar: appBar,
+        body: bodyPage,
+        floatingActionButton: Platform.isIOS ? Container() :
+        FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context),
+        ),
+        // centraliza o floatingButton no meio da tela canto inferior (por padrao vem do lado direito)
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, 
     );
   }
 }
