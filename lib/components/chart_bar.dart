@@ -7,13 +7,11 @@ class ChartBar extends StatelessWidget {
   final double percentage;
 
   // quando coloca {} é porque os parametros serao nomeados
-  ChartBar({
+  const ChartBar({
     this.label, 
     this.value, 
     this.percentage
   });
-
-
 
   @override
   Widget build(BuildContext context) {
