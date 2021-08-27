@@ -1,16 +1,15 @@
 # Expenses APP
 
-A new Flutter project to control expenses.
+#### A Flutter project to control your expenses.
 
-## Getting Started
+In this project contains:
+- Expense register, where you can add expense title, amount and date
+- Calendar management in Flutter
+- Expense exclusion
+- Graph showing the day of the week that spent the most
+- Use of custom font for the APP
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Some images:
+<img src="https://user-images.githubusercontent.com/23016117/131055427-9374892b-78f7-4c06-a89b-05a3592b2f2b.png" width="200" height="400"/>
+<img src="https://user-images.githubusercontent.com/23016117/131055421-9c954dc1-bf9e-41ef-b8d1-138904b4bb82.png" width="200" height="400"/>
+<img src="https://user-images.githubusercontent.com/23016117/131055432-ab06afae-5ffa-4d49-b1ce-ab6d350b9ecc.png" width="200" height="400"/>
